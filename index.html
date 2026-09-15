@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbería</title>
+    <title>Barbería Premium</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,6 +12,12 @@
     <div class="card-container">
         <!-- Encabezado / Branding -->
         <header class="header">
+            <!-- Insignia de Estado Abierto/Cerrado -->
+            <div id="status-badge" class="status-badge open">
+                <span class="status-dot"></span>
+                <span id="status-text">Abierto</span>
+            </div>
+
             <div class="profile-img">
                 <i class="fa-solid fa-scissors logo-icon"></i>
             </div>
@@ -29,13 +35,14 @@
             </a>
         </section>
 
-        <!-- Pestañas -->
+        <!-- Navegación por Pestañas -->
         <nav class="tab-nav">
-            <button class="tab-btn active" onclick="switchTab('services')"><i class="fa-solid fa-list"></i> Menú / Servicios</button>
+            <button class="tab-btn active" onclick="switchTab('services')"><i class="fa-solid fa-list"></i> Menú</button>
+            <button class="tab-btn" onclick="switchTab('barbers')"><i class="fa-solid fa-user-group"></i> Equipo</button>
             <button class="tab-btn" onclick="switchTab('gallery')"><i class="fa-solid fa-image"></i> Galería</button>
         </nav>
 
-        <!-- Menú -->
+        <!-- Menú de Servicios -->
         <section id="services-tab" class="tab-content active">
             <h2>Nuestros Servicios</h2>
             <div class="service-list" id="services-container">
@@ -43,7 +50,15 @@
             </div>
         </section>
 
-        <!-- Galería -->
+        <!-- Sección Barberos -->
+        <section id="barbers-tab" class="tab-content">
+            <h2>Nuestro Equipo</h2>
+            <div class="barbers-grid" id="barbers-container">
+                <p>Cargando equipo...</p>
+            </div>
+        </section>
+
+        <!-- Galería de Fotos -->
         <section id="gallery-tab" class="tab-content">
             <h2>Trabajos Recientes</h2>
             <div class="gallery-grid" id="gallery-container">
@@ -70,7 +85,7 @@
             </a>
         </section>
 
-        <!-- Compartir y QR -->
+        <!-- Compartir y Código QR -->
         <section class="share-section">
             <button class="btn btn-share" onclick="sharePage()">
                 <i class="fa-solid fa-share-nodes"></i> Compartir Perfil
