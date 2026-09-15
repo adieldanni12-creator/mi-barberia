@@ -289,4 +289,83 @@ body {
     font-size: 11px;
     color: var(--text-secondary);
     margin-top: 15px;
+    /* Insignia de Estado (Abierto / Cerrado) */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    background-color: #2a2a2a;
+}
+
+.status-badge.open {
+    color: #25d366;
+    border: 1px solid rgba(37, 211, 102, 0.3);
+}
+
+.status-badge.closed {
+    color: #ff6b6b;
+    border: 1px solid rgba(255, 107, 107, 0.3);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-badge.open .status-dot {
+    background-color: #25d366;
+    box-shadow: 0 0 8px #25d366;
+}
+
+.status-badge.closed .status-dot {
+    background-color: #ff6b6b;
+    box-shadow: 0 0 8px #ff6b6b;
+}
+
+/* Tarjetas de Barberos */
+.barbers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.barber-card {
+    background-color: #262626;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+
+.barber-card img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 8px;
+    border: 2px solid var(--accent-gold);
+}
+
+.barber-card h3 {
+    font-size: 15px;
+    margin-bottom: 2px;
+}
+
+.barber-card p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.barber-link {
+    color: var(--accent-gold);
+    font-size: 14px;
+    text-decoration: none;
 }
