@@ -1,5 +1,5 @@
 // PEGA AQUÍ LA URL DE TU APPS SCRIPT
-const API_URL = "https://script.google.com/macros/s/AKfycbwMmIf69ly9CjmqTQw--bHW8qgWP7jTAaoIk1JiJqWnbXn8rzcmTmn1H8VZ6gwlRedi/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwNEYHKcnXgwNc14MX0_bvGezFTJmVojrQGyCFHXS8O72cjW5jq5JDFxp-zqWjeddl5/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
