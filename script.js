@@ -15,7 +15,7 @@ function loadData() {
             // 1. Estado Abierto / Cerrado
             const badge = document.getElementById("status-badge");
             const statusText = document.getElementById("status-text");
-            const estado = (config.estado || "Abierto").toLowerCase();
+            const estado = (config.estado || "Abierto").toString().toLowerCase();
 
             if (estado === "abierto") {
                 badge.className = "status-badge open";
@@ -25,7 +25,7 @@ function loadData() {
                 statusText.innerText = "Cerrado Por Ahora";
             }
 
-            // 2. Cargar Datos Generales
+            // 2. Cargar Datos Generales (Filtrando que no sean URLs sueltas)
             if (config.nombre) {
                 document.getElementById("shop-name").innerText = config.nombre;
                 document.getElementById("footer-name").innerText = config.nombre;
@@ -43,7 +43,7 @@ function loadData() {
 
             // 3. Cargar Lista de Servicios
             const servicesContainer = document.getElementById("services-container");
-            servicesContainer.innerHTML = "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400";
+            servicesContainer.innerHTML = "";
             servicios.forEach(item => {
                 servicesContainer.innerHTML += `
                     <div class="service-item">
@@ -63,7 +63,7 @@ function loadData() {
                 barbersContainer.innerHTML = "<p>No hay datos del equipo.</p>";
             } else {
                 barberos.forEach(b => {
-                    const foto = b.foto || "";
+                    const foto = b.foto || "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400";
                     barbersContainer.innerHTML += `
                         <div class="barber-card">
                             <img src="${foto}" alt="${b.nombre}">
