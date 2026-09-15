@@ -1,5 +1,4 @@
-// Reemplaza esta URL con tu enlace de ejecutable de Apps Script
-const API_URL = "https://script.google.com/macros/s/AKfycbwOz8Uhm6ujWyqx5x3_wCR-lWjdo_uLD7ZuVmYBuNDg_o8wlIdGxBuo701lMGDT_BY/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbzfpGDMAa2J-n9yyu27lg4F5m4YOrxmG0A-pX3GD4MnawX8rbhpJrW96dIKjQnl9Es0/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
@@ -7,17 +6,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function loadData() {
     fetch(API_URL)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Respuesta de red no ok");
-            }
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
             const config = data.config || {};
             const servicios = data.servicios || [];
+            const barberos = data.barberos || [];
 
-            // 1. Cargar Datos Generales
+            // 1. Estado Abierto / Cerrado
+            const badge = document.getElementById("status-badge");
+            const statusText = document.getElementById("status-text");
+            const estado = (config.estado || "Abierto").toLowerCase();
+
+            if (estado === "abierto") {
+                badge.className = "status-badge open";
+                statusText.innerText = "Abierto Ahora";
+            } else {
+                badge.className = "status-badge closed";
+                statusText.innerText = "Cerrado Por Ahora";
+            }
+
+            // 2. Cargar Datos Generales
             if (config.nombre) {
                 document.getElementById("shop-name").innerText = config.nombre;
                 document.getElementById("footer-name").innerText = config.nombre;
@@ -33,50 +41,54 @@ function loadData() {
             if (config.tiktok) document.getElementById("link-tt").href = config.tiktok;
             if (config.facebook) document.getElementById("link-fb").href = config.facebook;
 
-            // 2. Cargar Lista de Servicios
+            // 3. Cargar Lista de Servicios
             const servicesContainer = document.getElementById("services-container");
             servicesContainer.innerHTML = "";
-            
-            if (servicios.length === 0) {
-                servicesContainer.innerHTML = "<p>No hay servicios registrados.</p>";
+            servicios.forEach(item => {
+                servicesContainer.innerHTML += `
+                    <div class="service-item">
+                        <div class="service-info">
+                            <h3>${item.nombre}</h3>
+                            <p>${item.descripcion}</p>
+                        </div>
+                        <span class="price">${item.precio}</span>
+                    </div>
+                `;
+            });
+
+            // 4. Cargar Equipo / Barberos
+            const barbersContainer = document.getElementById("barbers-container");
+            barbersContainer.innerHTML = "";
+            if (barberos.length === 0) {
+                barbersContainer.innerHTML = "<p>No hay datos del equipo.</p>";
             } else {
-                servicios.forEach(item => {
-                    servicesContainer.innerHTML += `
-                        <div class="service-item">
-                            <div class="service-info">
-                                <h3>${item.nombre}</h3>
-                                <p>${item.descripcion}</p>
-                            </div>
-                            <span class="price">${item.precio}</span>
+                barberos.forEach(b => {
+                    const foto = b.foto || "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400";
+                    barbersContainer.innerHTML += `
+                        <div class="barber-card">
+                            <img src="${foto}" alt="${b.nombre}">
+                            <h3>${b.nombre}</h3>
+                            <p>${b.especialidad}</p>
+                            ${b.instagram ? `<a href="${b.instagram}" target="_blank" class="barber-link"><i class="fa-brands fa-instagram"></i></a>` : ''}
                         </div>
                     `;
                 });
             }
 
-            // 3. Cargar Galería (Filtra solo las filas que tengan una URL de imagen válida)
+            // 5. Cargar Galería
             const galleryContainer = document.getElementById("gallery-container");
             galleryContainer.innerHTML = "";
-            
             const fotos = servicios.filter(s => s.imagen && s.imagen.toString().trim().startsWith("http")).slice(0, 12);
             
-            if (fotos.length === 0) {
-                galleryContainer.innerHTML = "<p>No hay imágenes en la galería.</p>";
-            } else {
-                fotos.forEach(item => {
-                    galleryContainer.innerHTML += `
-                        <img src="${item.imagen}" alt="${item.nombre}">
-                    `;
-                });
-            }
+            fotos.forEach(item => {
+                galleryContainer.innerHTML += `
+                    <img src="${item.imagen}" alt="${item.nombre}">
+                `;
+            });
         })
-        .catch(err => {
-            console.error("Error cargando los datos:", err);
-            document.getElementById("services-container").innerHTML = "<p style='color:#ff6b6b;'>Error al conectar con la base de datos. Verifica la URL de Apps Script.</p>";
-            document.getElementById("gallery-container").innerHTML = "<p style='color:#ff6b6b;'>Error al cargar imágenes.</p>";
-        });
+        .catch(err => console.error("Error cargando los datos:", err));
 }
 
-// Cambio de pestañas
 function switchTab(tabName) {
     const tabs = document.querySelectorAll('.tab-content');
     const buttons = document.querySelectorAll('.tab-btn');
@@ -88,7 +100,6 @@ function switchTab(tabName) {
     event.currentTarget.classList.add('active');
 }
 
-// Compartir enlace
 function sharePage() {
     if (navigator.share) {
         navigator.share({
@@ -102,7 +113,6 @@ function sharePage() {
     }
 }
 
-// Mostrar/Ocultar Código QR
 function toggleQR() {
     const qrModal = document.getElementById('qr-modal');
     const qrImage = document.getElementById('qr-image');
