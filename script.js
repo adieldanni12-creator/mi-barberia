@@ -56,15 +56,23 @@ function loadData() {
                 `;
             });
 
-            // 4. Cargar Equipo / Barberos (Sin foto por defecto si viene vacía)
+            // 4. Cargar Equipo / Barberos (Fotos locales desde GitHub o URL directa)
             const barbersContainer = document.getElementById("barbers-container");
             barbersContainer.innerHTML = "";
             if (barberos.length === 0) {
-                barbersContainer.innerHTML = "<p>No hay datos del equipo por ahora.</p>";
+                barbersContainer.innerHTML = "<p>No hay datos del equipo.</p>";
             } else {
                 barberos.forEach(b => {
-                    const tieneFoto = b.foto && b.foto.toString().trim().startsWith("http");
-                    const imgHTML = tieneFoto ? `<img src="${b.foto}" alt="${b.nombre}">` : `<div class="barber-avatar-placeholder"><i class="fa-solid fa-user"></i></div>`;
+                    let fotoPath = "";
+                    if (b.foto && b.foto.toString().trim() !== "") {
+                        const fotoStr = b.foto.toString().trim();
+                        // Si ya es un enlace completo lo usa; si es un nombre de archivo (ej. alex.jpg), le pone ./ al inicio
+                        fotoPath = fotoStr.startsWith("http") ? fotoStr : `./${fotoStr}`;
+                    }
+
+                    const imgHTML = fotoPath !== "" 
+                        ? `<img src="${fotoPath}" alt="${b.nombre}">` 
+                        : `<div class="barber-avatar-placeholder"><i class="fa-solid fa-user"></i></div>`;
                     
                     barbersContainer.innerHTML += `
                         <div class="barber-card">
@@ -77,17 +85,19 @@ function loadData() {
                 });
             }
 
-            // 5. Cargar Galería
+            // 5. Cargar Galería (Soporta también fotos guardadas en GitHub)
             const galleryContainer = document.getElementById("gallery-container");
             galleryContainer.innerHTML = "";
-            const fotos = servicios.filter(s => s.imagen && s.imagen.toString().trim().startsWith("http")).slice(0, 12);
+            const fotos = servicios.filter(s => s.imagen && s.imagen.toString().trim() !== "").slice(0, 12);
             
             if (fotos.length === 0) {
                 galleryContainer.innerHTML = "<p>No hay fotos en la galería.</p>";
             } else {
                 fotos.forEach(item => {
+                    const imgStr = item.imagen.toString().trim();
+                    const imgPath = imgStr.startsWith("http") ? imgStr : `./${imgStr}`;
                     galleryContainer.innerHTML += `
-                        <img src="${item.imagen}" alt="${item.nombre}">
+                        <img src="${imgPath}" alt="${item.nombre}">
                     `;
                 });
             }
@@ -125,16 +135,4 @@ function toggleQR() {
     const currentURL = encodeURIComponent(window.location.href);
     qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${currentURL}`;
     qrModal.classList.toggle('hidden');
-    .barber-avatar-placeholder {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-color: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 8px;
-    border: 2px solid var(--accent-gold);
-    color: var(--accent-gold);
-    font-size: 28px;
 }
