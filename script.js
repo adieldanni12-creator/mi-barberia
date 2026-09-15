@@ -43,7 +43,7 @@ function loadData() {
 
             // 3. Cargar Lista de Servicios
             const servicesContainer = document.getElementById("services-container");
-            servicesContainer.innerHTML = "";
+            servicesContainer.innerHTML = "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400";
             servicios.forEach(item => {
                 servicesContainer.innerHTML += `
                     <div class="service-item">
