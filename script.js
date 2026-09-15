@@ -25,7 +25,7 @@ function loadData() {
                 statusText.innerText = "Cerrado Por Ahora";
             }
 
-            // 2. Cargar Datos Generales (Filtrando que no sean URLs sueltas)
+            // 2. Cargar Datos Generales
             if (config.nombre) {
                 document.getElementById("shop-name").innerText = config.nombre;
                 document.getElementById("footer-name").innerText = config.nombre;
@@ -56,17 +56,19 @@ function loadData() {
                 `;
             });
 
-            // 4. Cargar Equipo / Barberos
+            // 4. Cargar Equipo / Barberos (Sin foto por defecto si viene vacía)
             const barbersContainer = document.getElementById("barbers-container");
             barbersContainer.innerHTML = "";
             if (barberos.length === 0) {
-                barbersContainer.innerHTML = "<p>No hay datos del equipo.</p>";
+                barbersContainer.innerHTML = "<p>No hay datos del equipo por ahora.</p>";
             } else {
                 barberos.forEach(b => {
-                    const foto = b.foto || "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400";
+                    const tieneFoto = b.foto && b.foto.toString().trim().startsWith("http");
+                    const imgHTML = tieneFoto ? `<img src="${b.foto}" alt="${b.nombre}">` : `<div class="barber-avatar-placeholder"><i class="fa-solid fa-user"></i></div>`;
+                    
                     barbersContainer.innerHTML += `
                         <div class="barber-card">
-                            <img src="${foto}" alt="${b.nombre}">
+                            ${imgHTML}
                             <h3>${b.nombre}</h3>
                             <p>${b.especialidad}</p>
                             ${b.instagram ? `<a href="${b.instagram}" target="_blank" class="barber-link"><i class="fa-brands fa-instagram"></i></a>` : ''}
@@ -80,11 +82,15 @@ function loadData() {
             galleryContainer.innerHTML = "";
             const fotos = servicios.filter(s => s.imagen && s.imagen.toString().trim().startsWith("http")).slice(0, 12);
             
-            fotos.forEach(item => {
-                galleryContainer.innerHTML += `
-                    <img src="${item.imagen}" alt="${item.nombre}">
-                `;
-            });
+            if (fotos.length === 0) {
+                galleryContainer.innerHTML = "<p>No hay fotos en la galería.</p>";
+            } else {
+                fotos.forEach(item => {
+                    galleryContainer.innerHTML += `
+                        <img src="${item.imagen}" alt="${item.nombre}">
+                    `;
+                });
+            }
         })
         .catch(err => console.error("Error cargando los datos:", err));
 }
