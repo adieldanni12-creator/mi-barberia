@@ -125,4 +125,16 @@ function toggleQR() {
     const currentURL = encodeURIComponent(window.location.href);
     qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${currentURL}`;
     qrModal.classList.toggle('hidden');
+    .barber-avatar-placeholder {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    border: 2px solid var(--accent-gold);
+    color: var(--accent-gold);
+    font-size: 28px;
 }
