@@ -63,7 +63,7 @@ function loadData() {
                 barbersContainer.innerHTML = "<p>No hay datos del equipo.</p>";
             } else {
                 barberos.forEach(b => {
-                    const foto = b.foto || "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400";
+                    const foto = b.foto || "";
                     barbersContainer.innerHTML += `
                         <div class="barber-card">
                             <img src="${foto}" alt="${b.nombre}">
