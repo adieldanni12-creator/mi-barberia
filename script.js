@@ -1,47 +1,65 @@
-// PEGA AQUÍ TU URL DE APPS SCRIPT
-const API_URL = "https://script.google.com/macros/s/AKfycbyHNcK169emeriHhJe879LZjfE1YGRk0fyXb1Aw1kkEvX3oQE_hKBesYS40yW1vDSTF/exec";
+// PEGA AQUÍ LA URL DE TU APPS SCRIPT
+const API_URL = "https://script.google.com/macros/s/AKfycbynIAwF5nnlN8oEWTtuMMn0GU2yT6o5m_3CqYJ97iYzFtB2rcgbhIJn78nXpIaTE1MD/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
 });
 
 function loadData() {
-    // Parámetro dinámico para obligar a consultar datos en vivo
-    const urlSinCache = `${API_URL}?nocache=${Date.now()}`;
+    // Generador de parámetro aleatorio para obligar a leer datos frescos sin caché
+    const freshURL = API_URL + (API_URL.includes("?") ? "&" : "?") + "v=" + Math.random().toString(36).substring(7);
 
-    fetch(urlSinCache, { cache: "no-store" })
-        .then(response => response.json())
+    fetch(freshURL)
+        .then(response => {
+            if (!response.ok) throw new Error("Error en la respuesta de red");
+            return response.json();
+        })
         .then(data => {
             const config = data.config || {};
             const servicios = data.servicios || [];
             const barberos = data.barberos || [];
 
-            // 1. Estado Abierto / Cerrado (Detección flexible)
+            // ==========================================
+            // 1. ESTADO: ABIERTO O CERRADO (LÓGICA BLINDADA)
+            // ==========================================
             const badge = document.getElementById("status-badge");
             const statusText = document.getElementById("status-text");
             
-            // Leemos el valor y lo convertimos a minúsculas sin espacios
-            const estadoRecibido = (config.estado || "").toString().toLowerCase().trim();
+            // Limpia comillas, espacios raros y pasa a minúsculas
+            const rawEstado = (config.estado || "").toString().toLowerCase().replace(/[^a-z]/g, "");
 
-            if (estadoRecibido === "abierto") {
+            console.log("Estado recibido desde Sheets:", rawEstado);
+
+            if (rawEstado === "abierto") {
                 badge.className = "status-badge open";
                 statusText.innerText = "Abierto Ahora";
-            } else {
+            } else if (rawEstado === "cerrado") {
                 badge.className = "status-badge closed";
                 statusText.innerText = "Cerrado Por Ahora";
-            }
-
-            // 2. Horario de Atención
-            document.getElementById("schedule-main").innerText = config.horario_dias || "Lun - Sáb: 10:00 AM - 8:00 PM";
-            const subHorario = document.getElementById("schedule-sub");
-            if (config.horario_extra && config.horario_extra.toString().trim() !== "") {
-                subHorario.innerText = config.horario_extra;
-                subHorario.style.display = "block";
             } else {
-                subHorario.style.display = "none";
+                // Si escribiste otra cosa o viene vacío
+                badge.className = "status-badge closed";
+                statusText.innerText = config.estado ? config.estado : "Cerrado Por Ahora";
             }
 
-            // 3. Cargar Datos Generales
+            // ==========================================
+            // 2. HORARIO DE ATENCIÓN
+            // ==========================================
+            const scheduleMain = document.getElementById("schedule-main");
+            const scheduleSub = document.getElementById("schedule-sub");
+
+            scheduleMain.innerText = config.horario_dias || "Lun - Sáb: 10:00 AM - 8:00 PM";
+            
+            if (config.horario_extra && config.horario_extra.toString().trim() !== "") {
+                scheduleSub.innerText = config.horario_extra;
+                scheduleSub.style.display = "block";
+            } else {
+                scheduleSub.style.display = "none";
+            }
+
+            // ==========================================
+            // 3. DATOS GENERALES
+            // ==========================================
             if (config.nombre) {
                 document.getElementById("shop-name").innerText = config.nombre;
                 document.getElementById("footer-name").innerText = config.nombre;
@@ -57,24 +75,34 @@ function loadData() {
             if (config.tiktok) document.getElementById("link-tt").href = config.tiktok;
             if (config.facebook) document.getElementById("link-fb").href = config.facebook;
 
-            // 4. Cargar Lista de Servicios
+            // ==========================================
+            // 4. SERVICIOS / MENÚ
+            // ==========================================
             const servicesContainer = document.getElementById("services-container");
             servicesContainer.innerHTML = "";
-            servicios.forEach(item => {
-                servicesContainer.innerHTML += `
-                    <div class="service-item">
-                        <div class="service-info">
-                            <h3>${item.nombre}</h3>
-                            <p>${item.descripcion}</p>
+            
+            if (servicios.length === 0) {
+                servicesContainer.innerHTML = "<p class='loading-msg'>No hay servicios registrados.</p>";
+            } else {
+                servicios.forEach(item => {
+                    servicesContainer.innerHTML += `
+                        <div class="service-item">
+                            <div class="service-info">
+                                <h3>${item.nombre}</h3>
+                                <p>${item.descripcion}</p>
+                            </div>
+                            <span class="price">${item.precio}</span>
                         </div>
-                        <span class="price">${item.precio}</span>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
 
-            // 5. Cargar Barberos
+            // ==========================================
+            // 5. EQUIPO / BARBEROS
+            // ==========================================
             const barbersContainer = document.getElementById("barbers-container");
             barbersContainer.innerHTML = "";
+            
             if (barberos.length === 0) {
                 barbersContainer.innerHTML = "<p class='loading-msg'>No hay datos del equipo.</p>";
             } else {
@@ -100,9 +128,12 @@ function loadData() {
                 });
             }
 
-            // 6. Cargar Galería
+            // ==========================================
+            // 6. GALERÍA
+            // ==========================================
             const galleryContainer = document.getElementById("gallery-container");
             galleryContainer.innerHTML = "";
+            
             const fotos = servicios.filter(s => s.imagen && s.imagen.toString().trim() !== "").slice(0, 12);
             
             if (fotos.length === 0) {
@@ -117,7 +148,10 @@ function loadData() {
                 });
             }
         })
-        .catch(err => console.error("Error cargando los datos:", err));
+        .catch(err => {
+            console.error("Error al cargar datos:", err);
+            document.getElementById("status-text").innerText = "Sin Conexión";
+        });
 }
 
 function switchTab(tabName) {
