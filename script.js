@@ -1,27 +1,29 @@
-// REEMPLAZA CON TU URL DE APPS SCRIPT
-const API_URL = "https://script.google.com/macros/s/AKfycbzfpGDMAa2J-n9yyu27lg4F5m4YOrxmG0A-pX3GD4MnawX8rbhpJrW96dIKjQnl9Es0/exec";
+// PEGA AQUÍ TU URL DE APPS SCRIPT
+const API_URL = "https://script.google.com/macros/s/AKfycbyHNcK169emeriHhJe879LZjfE1YGRk0fyXb1Aw1kkEvX3oQE_hKBesYS40yW1vDSTF/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
     loadData();
 });
 
 function loadData() {
-    // Agregamos un timestamp para evitar que el navegador guarde en caché datos viejos
-    const noCacheURL = `${API_URL}?t=${new Date().getTime()}`;
+    // Parámetro dinámico para obligar a consultar datos en vivo
+    const urlSinCache = `${API_URL}?nocache=${Date.now()}`;
 
-    fetch(noCacheURL)
+    fetch(urlSinCache, { cache: "no-store" })
         .then(response => response.json())
         .then(data => {
             const config = data.config || {};
             const servicios = data.servicios || [];
             const barberos = data.barberos || [];
 
-            // 1. Estado Abierto / Cerrado (Limpieza estricta de texto)
+            // 1. Estado Abierto / Cerrado (Detección flexible)
             const badge = document.getElementById("status-badge");
             const statusText = document.getElementById("status-text");
-            const estado = (config.estado || "").toString().trim().toLowerCase();
+            
+            // Leemos el valor y lo convertimos a minúsculas sin espacios
+            const estadoRecibido = (config.estado || "").toString().toLowerCase().trim();
 
-            if (estado === "abierto") {
+            if (estadoRecibido === "abierto") {
                 badge.className = "status-badge open";
                 statusText.innerText = "Abierto Ahora";
             } else {
