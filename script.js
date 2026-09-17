@@ -1,4 +1,4 @@
-// PEGA AQUÍ LA URL DE TU DESPLIEGUE DE GOOGLE APPS SCRIPT
+// REEMPLAZA CON TU URL DE APPS SCRIPT
 const API_URL = "https://script.google.com/macros/s/AKfycbzfpGDMAa2J-n9yyu27lg4F5m4YOrxmG0A-pX3GD4MnawX8rbhpJrW96dIKjQnl9Es0/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -6,17 +6,20 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function loadData() {
-    fetch(API_URL)
+    // Agregamos un timestamp para evitar que el navegador guarde en caché datos viejos
+    const noCacheURL = `${API_URL}?t=${new Date().getTime()}`;
+
+    fetch(noCacheURL)
         .then(response => response.json())
         .then(data => {
             const config = data.config || {};
             const servicios = data.servicios || [];
             const barberos = data.barberos || [];
 
-            // 1. Estado Abierto / Cerrado
+            // 1. Estado Abierto / Cerrado (Limpieza estricta de texto)
             const badge = document.getElementById("status-badge");
             const statusText = document.getElementById("status-text");
-            const estado = (config.estado || "Abierto").toString().toLowerCase().trim();
+            const estado = (config.estado || "").toString().trim().toLowerCase();
 
             if (estado === "abierto") {
                 badge.className = "status-badge open";
@@ -26,7 +29,17 @@ function loadData() {
                 statusText.innerText = "Cerrado Por Ahora";
             }
 
-            // 2. Cargar Datos Generales
+            // 2. Horario de Atención
+            document.getElementById("schedule-main").innerText = config.horario_dias || "Lun - Sáb: 10:00 AM - 8:00 PM";
+            const subHorario = document.getElementById("schedule-sub");
+            if (config.horario_extra && config.horario_extra.toString().trim() !== "") {
+                subHorario.innerText = config.horario_extra;
+                subHorario.style.display = "block";
+            } else {
+                subHorario.style.display = "none";
+            }
+
+            // 3. Cargar Datos Generales
             if (config.nombre) {
                 document.getElementById("shop-name").innerText = config.nombre;
                 document.getElementById("footer-name").innerText = config.nombre;
@@ -42,7 +55,7 @@ function loadData() {
             if (config.tiktok) document.getElementById("link-tt").href = config.tiktok;
             if (config.facebook) document.getElementById("link-fb").href = config.facebook;
 
-            // 3. Cargar Lista de Servicios
+            // 4. Cargar Lista de Servicios
             const servicesContainer = document.getElementById("services-container");
             servicesContainer.innerHTML = "";
             servicios.forEach(item => {
@@ -57,11 +70,11 @@ function loadData() {
                 `;
             });
 
-            // 4. Cargar Equipo / Barberos (Soporta foto local de GitHub o URL web)
+            // 5. Cargar Barberos
             const barbersContainer = document.getElementById("barbers-container");
             barbersContainer.innerHTML = "";
             if (barberos.length === 0) {
-                barbersContainer.innerHTML = "<p>No hay datos del equipo.</p>";
+                barbersContainer.innerHTML = "<p class='loading-msg'>No hay datos del equipo.</p>";
             } else {
                 barberos.forEach(b => {
                     let fotoPath = "";
@@ -85,13 +98,13 @@ function loadData() {
                 });
             }
 
-            // 5. Cargar Galería (Soporta fotos locales de GitHub o enlaces web)
+            // 6. Cargar Galería
             const galleryContainer = document.getElementById("gallery-container");
             galleryContainer.innerHTML = "";
             const fotos = servicios.filter(s => s.imagen && s.imagen.toString().trim() !== "").slice(0, 12);
             
             if (fotos.length === 0) {
-                galleryContainer.innerHTML = "<p>No hay fotos en la galería.</p>";
+                galleryContainer.innerHTML = "<p class='loading-msg'>No hay fotos en la galería.</p>";
             } else {
                 fotos.forEach(item => {
                     const imgStr = item.imagen.toString().trim();
@@ -105,7 +118,6 @@ function loadData() {
         .catch(err => console.error("Error cargando los datos:", err));
 }
 
-// Control de Pestañas
 function switchTab(tabName) {
     const tabs = document.querySelectorAll('.tab-content');
     const buttons = document.querySelectorAll('.tab-btn');
@@ -117,7 +129,6 @@ function switchTab(tabName) {
     event.currentTarget.classList.add('active');
 }
 
-// Compartir enlace
 function sharePage() {
     if (navigator.share) {
         navigator.share({
@@ -131,7 +142,6 @@ function sharePage() {
     }
 }
 
-// Mostrar / Ocultar Código QR
 function toggleQR() {
     const qrModal = document.getElementById('qr-modal');
     const qrImage = document.getElementById('qr-image');
