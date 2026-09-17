@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbería Premium</title>
+    <title>Barber Shop</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Iconos de FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -15,7 +16,7 @@
             <!-- Insignia de Estado Abierto/Cerrado -->
             <div id="status-badge" class="status-badge open">
                 <span class="status-dot"></span>
-                <span id="status-text">Abierto</span>
+                <span id="status-text">Abierto Ahora</span>
             </div>
 
             <div class="profile-img">
@@ -25,7 +26,7 @@
             <p class="tagline" id="shop-tagline">...</p>
         </header>
 
-        <!-- Botones de Acción -->
+        <!-- Botones de Acción Rápida -->
         <section class="action-buttons">
             <a id="btn-call" href="#" class="btn btn-call">
                 <i class="fa-solid fa-phone"></i> Llamar
@@ -42,7 +43,7 @@
             <button class="tab-btn" onclick="switchTab('gallery')"><i class="fa-solid fa-image"></i> Galería</button>
         </nav>
 
-        <!-- Menú de Servicios -->
+        <!-- Pestaña: Menú de Servicios -->
         <section id="services-tab" class="tab-content active">
             <h2>Nuestros Servicios</h2>
             <div class="service-list" id="services-container">
@@ -50,7 +51,7 @@
             </div>
         </section>
 
-        <!-- Sección Barberos -->
+        <!-- Pestaña: Equipo / Barberos -->
         <section id="barbers-tab" class="tab-content">
             <h2>Nuestro Equipo</h2>
             <div class="barbers-grid" id="barbers-container">
@@ -58,7 +59,7 @@
             </div>
         </section>
 
-        <!-- Galería de Fotos -->
+        <!-- Pestaña: Galería -->
         <section id="gallery-tab" class="tab-content">
             <h2>Trabajos Recientes</h2>
             <div class="gallery-grid" id="gallery-container">
