@@ -1,3 +1,4 @@
+// PEGA AQUÍ LA URL DE TU DESPLIEGUE DE GOOGLE APPS SCRIPT
 const API_URL = "https://script.google.com/macros/s/AKfycbzfpGDMAa2J-n9yyu27lg4F5m4YOrxmG0A-pX3GD4MnawX8rbhpJrW96dIKjQnl9Es0/exec";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -15,7 +16,7 @@ function loadData() {
             // 1. Estado Abierto / Cerrado
             const badge = document.getElementById("status-badge");
             const statusText = document.getElementById("status-text");
-            const estado = (config.estado || "Abierto").toString().toLowerCase();
+            const estado = (config.estado || "Abierto").toString().toLowerCase().trim();
 
             if (estado === "abierto") {
                 badge.className = "status-badge open";
@@ -56,7 +57,7 @@ function loadData() {
                 `;
             });
 
-            // 4. Cargar Equipo / Barberos (Fotos locales desde GitHub o URL directa)
+            // 4. Cargar Equipo / Barberos (Soporta foto local de GitHub o URL web)
             const barbersContainer = document.getElementById("barbers-container");
             barbersContainer.innerHTML = "";
             if (barberos.length === 0) {
@@ -66,7 +67,6 @@ function loadData() {
                     let fotoPath = "";
                     if (b.foto && b.foto.toString().trim() !== "") {
                         const fotoStr = b.foto.toString().trim();
-                        // Si ya es un enlace completo lo usa; si es un nombre de archivo (ej. alex.jpg), le pone ./ al inicio
                         fotoPath = fotoStr.startsWith("http") ? fotoStr : `./${fotoStr}`;
                     }
 
@@ -85,7 +85,7 @@ function loadData() {
                 });
             }
 
-            // 5. Cargar Galería (Soporta también fotos guardadas en GitHub)
+            // 5. Cargar Galería (Soporta fotos locales de GitHub o enlaces web)
             const galleryContainer = document.getElementById("gallery-container");
             galleryContainer.innerHTML = "";
             const fotos = servicios.filter(s => s.imagen && s.imagen.toString().trim() !== "").slice(0, 12);
@@ -105,6 +105,7 @@ function loadData() {
         .catch(err => console.error("Error cargando los datos:", err));
 }
 
+// Control de Pestañas
 function switchTab(tabName) {
     const tabs = document.querySelectorAll('.tab-content');
     const buttons = document.querySelectorAll('.tab-btn');
@@ -116,6 +117,7 @@ function switchTab(tabName) {
     event.currentTarget.classList.add('active');
 }
 
+// Compartir enlace
 function sharePage() {
     if (navigator.share) {
         navigator.share({
@@ -129,6 +131,7 @@ function sharePage() {
     }
 }
 
+// Mostrar / Ocultar Código QR
 function toggleQR() {
     const qrModal = document.getElementById('qr-modal');
     const qrImage = document.getElementById('qr-image');
