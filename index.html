@@ -4,24 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Barber Shop</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <!-- Fuentes modernas: Rajdhani para títulos y Outfit para textos -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Rajdhani:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=3">
     <!-- Iconos de FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
+    <div class="cyber-glow-bg"></div>
+
     <div class="card-container">
         <!-- Encabezado / Branding -->
         <header class="header">
-            <!-- Insignia de Estado Abierto/Cerrado -->
+            <!-- Insignia de Estado -->
             <div id="status-badge" class="status-badge open">
                 <span class="status-dot"></span>
                 <span id="status-text">Abierto Ahora</span>
             </div>
 
-            <div class="profile-img">
-                <i class="fa-solid fa-scissors logo-icon"></i>
+            <div class="profile-img-wrap">
+                <div class="profile-img">
+                    <i class="fa-solid fa-scissors logo-icon"></i>
+                </div>
             </div>
+            
             <h1 id="shop-name">Cargando...</h1>
             <p class="tagline" id="shop-tagline">...</p>
         </header>
@@ -29,47 +38,56 @@
         <!-- Botones de Acción Rápida -->
         <section class="action-buttons">
             <a id="btn-call" href="#" class="btn btn-call">
-                <i class="fa-solid fa-phone"></i> Llamar
+                <i class="fa-solid fa-phone"></i> <span>Llamar</span>
             </a>
             <a id="btn-wa" href="#" target="_blank" class="btn btn-whatsapp">
-                <i class="fa-brands fa-whatsapp"></i> WhatsApp
+                <i class="fa-brands fa-whatsapp"></i> <span>WhatsApp</span>
             </a>
         </section>
 
-        <!-- Navegación por Pestañas -->
+        <!-- Pestañas -->
         <nav class="tab-nav">
-            <button class="tab-btn active" onclick="switchTab('services')"><i class="fa-solid fa-list"></i> Menú</button>
-            <button class="tab-btn" onclick="switchTab('barbers')"><i class="fa-solid fa-user-group"></i> Equipo</button>
-            <button class="tab-btn" onclick="switchTab('gallery')"><i class="fa-solid fa-image"></i> Galería</button>
+            <button class="tab-btn active" onclick="switchTab('services')"><i class="fa-solid fa-bolt"></i> Menú</button>
+            <button class="tab-btn" onclick="switchTab('barbers')"><i class="fa-solid fa-users"></i> Equipo</button>
+            <button class="tab-btn" onclick="switchTab('gallery')"><i class="fa-solid fa-camera"></i> Galería</button>
         </nav>
 
-        <!-- Pestaña: Menú de Servicios -->
+        <!-- Menú de Servicios -->
         <section id="services-tab" class="tab-content active">
-            <h2>Nuestros Servicios</h2>
+            <div class="section-header">
+                <h2>Servicios & Tarifas</h2>
+                <span class="neon-line"></span>
+            </div>
             <div class="service-list" id="services-container">
-                <p>Cargando menú...</p>
+                <p class="loading-msg">Cargando menú...</p>
             </div>
         </section>
 
-        <!-- Pestaña: Equipo / Barberos -->
+        <!-- Equipo / Barberos -->
         <section id="barbers-tab" class="tab-content">
-            <h2>Nuestro Equipo</h2>
+            <div class="section-header">
+                <h2>Master Crew</h2>
+                <span class="neon-line"></span>
+            </div>
             <div class="barbers-grid" id="barbers-container">
-                <p>Cargando equipo...</p>
+                <p class="loading-msg">Cargando equipo...</p>
             </div>
         </section>
 
-        <!-- Pestaña: Galería -->
+        <!-- Galería -->
         <section id="gallery-tab" class="tab-content">
-            <h2>Trabajos Recientes</h2>
+            <div class="section-header">
+                <h2>Cortes & Estilos</h2>
+                <span class="neon-line"></span>
+            </div>
             <div class="gallery-grid" id="gallery-container">
-                <p>Cargando galería...</p>
+                <p class="loading-msg">Cargando galería...</p>
             </div>
         </section>
 
         <!-- Redes Sociales -->
         <section class="social-links">
-            <h3>Síguenos</h3>
+            <p class="sub-title">SÍGUENOS EN REDES</p>
             <div class="social-icons">
                 <a id="link-ig" href="#" target="_blank" class="social-btn instagram"><i class="fa-brands fa-instagram"></i></a>
                 <a id="link-tt" href="#" target="_blank" class="social-btn tiktok"><i class="fa-brands fa-tiktok"></i></a>
@@ -79,10 +97,10 @@
 
         <!-- Ubicación -->
         <section class="location-section">
-            <h3>Ubicación</h3>
-            <p><i class="fa-solid fa-location-dot"></i> <span id="shop-location">...</span></p>
+            <div class="loc-icon-badge"><i class="fa-solid fa-location-dot"></i></div>
+            <p id="shop-location">...</p>
             <a id="btn-maps" href="#" target="_blank" class="btn btn-maps">
-                <i class="fa-solid fa-map-location-dot"></i> Ver en Google Maps
+                <i class="fa-solid fa-diamond-turn-right"></i> Abrir en Maps
             </a>
         </section>
 
@@ -92,20 +110,20 @@
                 <i class="fa-solid fa-share-nodes"></i> Compartir Perfil
             </button>
             <button class="btn btn-qr" onclick="toggleQR()">
-                <i class="fa-solid fa-qrcode"></i> Mostrar Código QR
+                <i class="fa-solid fa-qrcode"></i> Código QR
             </button>
 
             <div id="qr-modal" class="qr-container hidden">
-                <p>Escanea para abrir en tu celular:</p>
+                <p>Escanea con tu cámara:</p>
                 <img id="qr-image" src="" alt="Código QR">
             </div>
         </section>
 
         <footer class="footer">
-            <p>&copy; 2026 <span id="footer-name">Barbería</span>. Todos los derechos reservados.</p>
+            <p>&copy; 2026 <span id="footer-name">Barbería</span> // ALL RIGHTS RESERVED</p>
         </footer>
     </div>
 
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=3"></script>
 </body>
 </html>
